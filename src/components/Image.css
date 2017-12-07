@@ -1,0 +1,3 @@
+div.review-gallery-box > div:first-child:hover {
+    border: 1px solid black;
+}
