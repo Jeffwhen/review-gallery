@@ -1,3 +1,4 @@
 div.review-gallery-box > div:first-child:hover {
-    border: 1px solid black;
+    transition: all 0.3s ease;
+    border: 2px solid rgb(0, 188, 212);
 }

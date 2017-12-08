@@ -1,0 +1,11 @@
+
+button.secondary-paginate > div > span {
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+button.secondary-paginate:hover > div > span,
+button.secondary-paginate:active > div > span,
+button.secondary-paginate:focus > div > span {
+    opacity: 1;
+}

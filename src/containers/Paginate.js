@@ -13,6 +13,7 @@ class Paginate extends React.Component {
     push: PropTypes.func.isRequired,
     submit: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
+    judege: PropTypes.bool.isRequired,
     adverseSelect: PropTypes.func.isRequired
   }
   onChange = index => {
@@ -22,19 +23,21 @@ class Paginate extends React.Component {
     }
   }
   render() {
-    const {total, adverseSelect, submit} = this.props;
+    const {total, adverseSelect, submit, judege} = this.props;
     const props = {
       onChange: this.onChange,
       ...this.props
     };
     const submitProps = {
       label: '提交',
+      key: 'submit',
       secondary: true,
       onClick: () => submit(),
       icon: <DoneIcon />
     };
     const adverseProps = {
       label: '反选',
+      key: 'adverse',
       onClick: () => adverseSelect(),
       icon: <SwapIcon />
     };
@@ -42,21 +45,26 @@ class Paginate extends React.Component {
       textAlign: 'center',
       margin: '20px 0'
     };
+    const actions = judege ? [
+      <FlatButton {...submitProps} />,
+      <FlatButton {...adverseProps} />
+    ] : null;
     return total ? (
       <div style={divStyle}>
         <PaginateView {...props} />
-        <FlatButton {...submitProps} />
-        <FlatButton {...adverseProps} />
+        {actions}
       </div>
     ) : null;
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {pagination: {images: {index, total, isFetching}}} = state;
+  const {judege, pagination: {
+    images: {index, total, isFetching}
+  }} = state;
   const {history: {push}} = ownProps;
   const pushIndex = index => push(`/${index}`);
-  return {...ownProps, index, total, isFetching, push: pushIndex};
+  return {...ownProps, index, total, isFetching, push: pushIndex, judege};
 };
 
 const mapDispatchToProps = dispatch => ({

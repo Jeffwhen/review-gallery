@@ -41,7 +41,7 @@ const detail = (state={imgId: null, boxId: null}, action) => {
   return state;
 };
 
-const latestAPIType = (state=null, action)=> {
+const latestAPIType = (state=null, action) => {
   const {type, apiType} = action;
   if (type === ActionTypes.IMAGE_REQUEST) {
     return apiType;
@@ -49,8 +49,18 @@ const latestAPIType = (state=null, action)=> {
   return state;
 };
 
+const judege = (state=true, action) => {
+  const {type, response: {
+    result, entities: {images}={}
+  }={}} = action;
+  if (type === ActionTypes.IMAGE_SUCCESS) {
+    return result.map(id => images[id]).every(image => 'check' in image);
+  }
+  return state;
+};
+
 const rootReducer = combineReducers({
-  entities, errorMessage, pagination, detail, latestAPIType
+  entities, errorMessage, pagination, detail, latestAPIType, judege
 });
 
 export default rootReducer;

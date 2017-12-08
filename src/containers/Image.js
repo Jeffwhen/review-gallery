@@ -17,7 +17,8 @@ class Image extends React.Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     updateUrl: PropTypes.string.isRequired,
-    check: PropTypes.number.isRequired,
+    judege: PropTypes.bool.isRequired,
+    check: PropTypes.number,
     divHeight: PropTypes.number,
     checkImage: PropTypes.func
   }
@@ -47,7 +48,7 @@ class Image extends React.Component {
       color: 'rgb(0, 188, 212)',
       cursor: 'pointer'
     };
-    const {check, updateUrl, divHeight=size.height} = this.props;
+    const {check, updateUrl, judege, divHeight=size.height} = this.props;
     const Check = check === 0 ? NonCheckIcon : CheckIcon;
     const editAProps = {
       style: {float: 'right'},
@@ -56,7 +57,7 @@ class Image extends React.Component {
     };
     const caption = (
       <VerticalCenterDiv>
-        <Check onClick={this.checkImage} {...iconProps} />
+        {judege ? <Check onClick={this.checkImage} {...iconProps} /> : null}
         <a {...editAProps}><EditIcon {...iconProps} /></a>
       </VerticalCenterDiv>
     );
@@ -79,6 +80,7 @@ class Image extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const {judege} = state;
   let {url, objs} = ownProps;
   const scaleBox = calcScaleBox(ownProps, size);
   url = genURL(url, scaleBox);
@@ -86,7 +88,7 @@ const mapStateToProps = (state, ownProps) => {
   objs.forEach(obj => obj.bndBoxes.forEach(box => {
     Object.assign(box, adjustBox(box, scaleBox));
   }));
-  return {...ownProps, url, objs};
+  return {...ownProps, url, objs, judege};
 };
 
 const mapDispatchToProps = dispatch => ({

@@ -65,7 +65,7 @@ const postApi = ({pageIndex, ...params}, schema, proc, type='json') => {
     }
 
     let {maxPageIndex: total, pageIndex: index} = json;
-    total = parseInt(total, 10);
+    total = parseInt(total, 10) + 1;
     index = parseInt(index, 10);
     if (index > total) {
       throw new Error(`Invalid response index: ${index} out of ${total}`);

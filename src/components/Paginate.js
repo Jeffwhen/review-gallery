@@ -5,7 +5,10 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import NextIcon from 'material-ui/svg-icons/image/navigate-next';
 import PrevIcon from 'material-ui/svg-icons/image/navigate-before';
+import FirstIcon from 'material-ui/svg-icons/navigation/first-page';
 import LastIcon from 'material-ui/svg-icons/navigation/last-page';
+
+import './Paginate.css';
 
 class Paginate extends React.Component {
   static propTypes = {
@@ -46,17 +49,28 @@ class Paginate extends React.Component {
     this.setState({indexError, index: event.target.value});
   };
   setIndex = index => {
-    const {onChange, total} = this.props;
+    const {onChange, total, index: currIndex} = this.props;
     if (!onChange || isNaN(index) || index > total || index < 1) {
       return;
     }
-    onChange(index - 1);
+    index -= 1;
+    if (index === currIndex) {
+      return;
+    }
+    onChange(index);
   }
   render() {
     const {
       total, style: containerStyle
     } = this.props;
     const {index, indexError} = this.state;
+    const firstProps = {
+      icon: <FirstIcon />,
+      label: '开始',
+      onClick: () => this.setIndex(1),
+      labelPosition: 'before',
+      className: 'secondary-paginate'
+    };
     const prevProps = {
       label: '上一个',
       icon: <PrevIcon color="rgb(0, 188, 212)" />,
@@ -83,14 +97,17 @@ class Paginate extends React.Component {
     const lastProps = {
       icon: <LastIcon />,
       label: '末尾',
-      onClick: () => this.setIndex(total)
+      onClick: () => this.setIndex(total),
+      className: 'secondary-paginate'
     };
     const formStyle = {display: 'inline-block'};
     return (
       <div style={containerStyle}>
+        <FlatButton {...firstProps} />
         <FlatButton {...prevProps} />
         <form onSubmit={this.onChange} style={formStyle}>
-          <TextField {...inputProps} />
+          <TextField {...inputProps} /> /
+          <TextField {...inputProps} value={total} underlineShow={false} />
         </form>
         <FlatButton {...nextProps} />
         <FlatButton {...lastProps} />
