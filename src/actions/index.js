@@ -1,5 +1,4 @@
 import {CALL_API, Schemas} from '../middleware/api';
-import pick from 'lodash/pick';
 
 export const IMAGE_REQUEST = 'IMAGE_REQUEST';
 export const IMAGE_SUCCESS = 'IMAGE_SUCCESS';
@@ -53,7 +52,9 @@ export const submitChecks = () => (dispatch, getState) => {
   if (isFetching) {
     return;
   }
-  const imgs = ids.map(id => pick(images[id], ['check', 'unitId']));
+  const imgs = ids.map(id => images[id]).map(image => ({
+    unitId: image.id, status: image.check
+  }));
   return dispatch(fetchImage({imgs, pageIndex: index}, 'form'));
 };
 

@@ -19,10 +19,10 @@ const ImageView = ({
   let {url, objs, id} = image;
   const boxes = objs.reduce(
     (acc, obj) => acc.concat(
-      obj.bndBoxes.reduce((acc, l) => acc.concat(l))
+      obj.bndBoxes.reduce((acc, l) => acc.concat(l), [])
     ), []
   ).map((box, index) => {
-    let {xmin, xmax, ymin, ymax, keypoints} = box;
+    let {xmin, xmax, ymin, ymax, keypoints=[]} = box;
     const style = {
       width: '100%', height: '100%',
       position: 'absolute', top: 0, left: 0
@@ -175,7 +175,7 @@ export const calcScaleBox = (image, size, bottomPadding) => {
 
   const boxes = image.objs.reduce(
     (acc, obj) => acc.concat(
-      obj.bndBoxes.reduce((acc, l) => acc.concat(l))
+      obj.bndBoxes.reduce((acc, l) => acc.concat(l), [])
     ), []
   );
   let xmin = Math.min(...boxes.map(b => b.xmin));
