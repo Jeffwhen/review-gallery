@@ -61,7 +61,7 @@ class Paginate extends React.Component {
   }
   render() {
     const {
-      total, style: containerStyle
+      total, style: containerStyle, index: forReal
     } = this.props;
     const {index, indexError} = this.state;
     const firstProps = {
@@ -74,13 +74,13 @@ class Paginate extends React.Component {
     const prevProps = {
       label: '上一个',
       icon: <PrevIcon color="rgb(0, 188, 212)" />,
-      onClick: () => this.setIndex(index - 1)
+      onClick: () => this.setIndex(forReal - 1)
     };
     const nextProps = {
       label: '下一个',
       labelPosition: 'before',
       icon: <NextIcon color="rgb(0, 188, 212)" />,
-      onClick: () => this.setIndex(index + 1)
+      onClick: () => this.setIndex(forReal + 1)
     };
     const inputProps = {
       value: index,
@@ -93,6 +93,12 @@ class Paginate extends React.Component {
         position: 'absolute', top: 0, whiteSpace: 'nowrap',
         zIndex: -1
       }
+    };
+    const totalProps = {
+      ...inputProps,
+      value: total,
+      underlineShow: false,
+      onMouseDown: ev => {ev.preventDefault(); ev.target.blur();}
     };
     const lastProps = {
       icon: <LastIcon />,
@@ -107,7 +113,7 @@ class Paginate extends React.Component {
         <FlatButton {...prevProps} />
         <form onSubmit={this.onChange} style={formStyle}>
           <TextField {...inputProps} /> /
-          <TextField {...inputProps} value={total} underlineShow={false} />
+          <TextField {...totalProps} />
         </form>
         <FlatButton {...nextProps} />
         <FlatButton {...lastProps} />
