@@ -47,7 +47,7 @@ const postApi = ({pageIndex, ...params}, schema, proc, type='json') => {
   if (type === 'json') {
     params = JSON.stringify(Object.assign(params, ExtraParams));
   } else if (type === 'form') {
-    params = jquery.param(params);
+    params = jquery.param({postData: params});
   } else if (type === 'get') {
     params = undefined;
   } else {
@@ -131,7 +131,7 @@ export default store => next => action => {
     })),
     error => next(actionWith({
       error: error.message || error.errmsg || 'Something bad happened',
-      level: error.errcode === 1 ? 'info' : 'error',
+      level: error.errcode === 9 ? 'info' : 'error',
       type: failureType
     }))
   );
