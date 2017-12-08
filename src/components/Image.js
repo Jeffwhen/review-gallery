@@ -7,6 +7,12 @@ import './Image.css';
 
 const dotWidth = 4;
 const labelPadding = 4;
+const langMap = {
+  'left_up': '左上',
+  'right_up': '右上',
+  'left_low': '左下',
+  'right_low': '右下'
+};
 const ImageView = ({
   onBoxClick, onImageClick, labelFont, showLabel=true, ...image
 }) => {
@@ -76,7 +82,7 @@ const ImageView = ({
       return (
         <div key={index}>
           <div {...props}></div>
-          {showLabel ? <div {...labelProps}>{k}</div> : null}
+          {showLabel ? <div {...labelProps}>{langMap[k] || k}</div> : null}
         </div>
       );
     });

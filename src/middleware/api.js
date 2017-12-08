@@ -1,7 +1,10 @@
 import fetch from 'isomorphic-fetch';
 import {normalize, schema} from 'normalizr';
 import jquery from 'jquery';
+import pathlib from 'path';
+import querystring from 'querystring';
 import urllib from 'url';
+import pick from 'lodash/pick';
 
 export const CALL_API = 'Call API';
 const jsonHeaders = {
@@ -13,7 +16,26 @@ const formHeaders = {
   'Content-Type': 'application/x-www-form-urlencoded'
 };
 
-const Endpoint = '/image';
+// Stupid API hack
+const location = window.location;
+const path = pathlib.basename(location.pathname);
+let Endpoint = '/image';
+switch (path) {
+  case 'god':
+  case 'qgCheck': {
+    const qObj = querystring.parse(location.search.slice(1));
+    qObj.voteType = 1;
+    qObj.auditView = qObj.auditView || 0;
+    Endpoint = `/admin/god/godEye?${querystring.stringify(qObj)}`;
+    break;
+  }
+  case 'audit': {
+    Endpoint = `/user/auditTag/tagAuditProcess${location.search}`;
+    break;
+  }
+  default:
+    break;
+}
 const ExtraParams = {};
 const postApi = ({pageIndex, ...params}, schema, proc, type='json') => {
   if (typeof pageIndex === 'undefined') {
@@ -21,7 +43,7 @@ const postApi = ({pageIndex, ...params}, schema, proc, type='json') => {
   }
   const urlobj = urllib.parse(Endpoint, true);
   urlobj.query = {...urlobj.query, pageIndex};
-  const endpoint = urllib.format(urlobj);
+  const endpoint = urllib.format(pick(urlobj, ['pathname', 'query']));
   if (type === 'json') {
     params = JSON.stringify(Object.assign(params, ExtraParams));
   } else if (type === 'form') {
@@ -55,6 +77,9 @@ const postApi = ({pageIndex, ...params}, schema, proc, type='json') => {
 
 const imageSchema = new schema.Entity('images', {}, {
   processStrategy: entity => {
+    if (!('width' in entity && 'height' in entity)) {
+      throw new Error('Lack image size info from server.');
+    }
     entity.url = entity.url.replace('_300x300', '');
     entity.id = entity.unitId;
     delete entity.unitId;
